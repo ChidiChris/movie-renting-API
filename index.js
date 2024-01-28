@@ -1,42 +1,69 @@
-/*Here's an example of a JavaScript class with class/static properties and methods, along with how to use and access them:*/
 
-class MovieRentalApp {
-    // Class/static property (shared by all instances)
-    static availableMovies = [
-      { title: "The Shawshank Redemption", genre: "Drama" },
-      { title: "The Godfather", genre: "Crime" },
-      { title: "The Dark Knight", genre: "Action" }
-    ];
-  
-    // Class/static method (called directly on the class)
-    static displayMovieList() {
-      console.log("Available Movies:");
-      MovieRentalApp.availableMovies.forEach(movie => {
-        console.log(`- ${movie.title} (${movie.genre})`);
-      });
+class Movie {
+    constructor(title, releaseYear, rentalPrice) {
+        this.title = title;
+        this.releaseYear = releaseYear;
+        this.rentalPrice = rentalPrice;
+        this.isRented = false;
     }
-  
-    // Instance method (called on individual objects)
-    rentMovie(movieTitle) {
-      const movieIndex = MovieRentalApp.availableMovies.findIndex(movie => movie.title === movieTitle);
-      if (movieIndex !== -1) {
-        console.log(`You've rented ${movieTitle}!`)
-        MovieRentalApp.availableMovies.splice(movieIndex, 1);
-      } else {
-        console.log(`Movie not found.`);
-      }
+
+    rent() {
+        if (!this.isRented) {
+            this.isRented = true;
+            return `You have successfully rented ${this.title} for ${this.rentalPrice} dollars.`;
+        } else {
+            return `${this.title} is currently rented.`;
+        }
     }
-  }
-  
-  // Accessing class/static properties and methods:
-  
-  // Accessing the static property:
-  console.log(MovieRentalApp.availableMovies); // Output: Array of movie objects
-  
-  // Calling the static method:
-  MovieRentalApp.displayMovieList(); // Outputs the movie list
-  
-  // Creating an instance and calling an instance method:
-  const rentalApp = new MovieRentalApp();
-  rentalApp.rentMovie("The Shawshank Redemption"); // Output: "You've rented The Shawshank Redemption!"
-  
+
+    returnMovie() {
+        if (this.isRented) {
+            this.isRented = false;
+            return `Thank you for returning ${this.title}.`;
+        } else {
+            return `${this.title} is not currently rented.`;
+        }
+    }
+}
+
+class MovieStore {
+    constructor() {
+        this.movies = [];
+    }
+
+    addMovie(movie) {
+        this.movies.push(movie);
+    }
+
+    removeMovie(title) {
+        this.movies = this.movies.filter(movie => movie.title !== title);
+    }
+
+    getMovie(title) {
+        return this.movies.find(movie => movie.title === title);
+    }
+
+    getAvailableMovies() {
+        return this.movies.filter(movie => !movie.isRented);
+    }
+}
+
+// Usage:
+const movieStore = new MovieStore();
+
+const movie1 = new Movie('The Shawshank Redemption', 1994, 3);
+const movie2 = new Movie('The Godfather', 1972, 5);
+
+movieStore.addMovie(movie1);
+movieStore.addMovie(movie2);
+
+console.log(movieStore.getAvailableMovies());
+
+console.log(movie1.rent());
+console.log(movie1.returnMovie());
+console.log(movie1.rent());
+
+console.log(movieStore.getAvailableMovies());
+
+console.log(movieStore.removeMovie('The Shawshank Redemption'));
+console.log(movieStore.getAvailableMovies());
